@@ -4,6 +4,7 @@
     --bg-secondary: hsl(224, 64%, 8%);
     --bg-tertiary: hsl(224, 52%, 12%);
     --bg-glass: hsla(224, 64%, 8%, 0.65);
+    --bg-gradient-end: hsl(224, 52%, 8%);
     
     --border-color: hsla(224, 40%, 20%, 0.4);
     --border-glow: hsla(217, 91%, 60%, 0.25);
@@ -46,6 +47,41 @@
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 18px;
+}
+
+/* Light Theme Variables Overrides */
+body.light-theme {
+    --bg-primary: hsl(220, 24%, 96%);
+    --bg-secondary: hsl(0, 0%, 100%);
+    --bg-tertiary: hsl(220, 20%, 90%);
+    --bg-glass: rgba(255, 255, 255, 0.7);
+    --bg-gradient-end: hsl(220, 24%, 93%);
+    
+    --border-color: hsla(220, 20%, 80%, 0.5);
+    --border-glow: hsla(217, 91%, 60%, 0.15);
+    
+    --text-primary: hsl(222, 47%, 12%);
+    --text-secondary: hsl(220, 16%, 35%);
+    --text-muted: hsl(220, 12%, 50%);
+    
+    --twitter-bg-box: hsl(220, 20%, 95%);
+    
+    --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 16px 48px -8px rgba(0, 0, 0, 0.15);
+}
+
+body.light-theme ::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+body.light-theme ::-webkit-scrollbar-thumb {
+    background: var(--bg-tertiary);
+    border-color: var(--bg-primary);
+}
+
+body.light-theme ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
 }
 
 /* Reset & Global */
@@ -321,7 +357,7 @@ h1, h2, h3, h4, .brand h1 {
     height: 100vh;
     overflow-y: auto;
     padding: 2rem 3rem;
-    background: radial-gradient(circle at top right, hsl(224, 52%, 8%), var(--bg-primary));
+    background: radial-gradient(circle at top right, var(--bg-gradient-end), var(--bg-primary));
 }
 
 .main-header {

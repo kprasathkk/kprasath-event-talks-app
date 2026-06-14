@@ -520,10 +520,37 @@ function setupEventListeners() {
         showToast('Opened Twitter composer in new tab!', 'info');
         closeTweetDrawer();
     });
+    
+    // Theme toggle click
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            const isLight = document.body.classList.toggle('light-theme');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            
+            // Toggle icons
+            document.getElementById('theme-icon-light').style.display = isLight ? 'inline-block' : 'none';
+            document.getElementById('theme-icon-dark').style.display = isLight ? 'none' : 'inline-block';
+            
+            showToast(`${isLight ? 'Light' : 'Dark'} theme activated`, 'info');
+        });
+    }
 }
 
 // Initial Bootstrapping
 document.addEventListener('DOMContentLoaded', () => {
+    // Check saved theme
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        const sunIcon = document.getElementById('theme-icon-light');
+        const moonIcon = document.getElementById('theme-icon-dark');
+        if (sunIcon && moonIcon) {
+            sunIcon.style.display = 'inline-block';
+            moonIcon.style.display = 'none';
+        }
+    }
+    
     setupEventListeners();
     fetchReleaseNotes(false); // Fetch on load (uses cache first if available, otherwise live)
 });
