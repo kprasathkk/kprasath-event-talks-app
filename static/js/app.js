@@ -228,6 +228,9 @@ function filterAndRenderNotes() {
                 ${note.html_content}
             </div>
             <div class="note-footer">
+                <button class="btn-card-copy" data-id="${note.id}">
+                    <i class="fa-solid fa-copy"></i> Copy note
+                </button>
                 <button class="btn-card-tweet" data-id="${note.id}">
                     <i class="fa-brands fa-twitter"></i> Tweet update
                 </button>
@@ -242,6 +245,19 @@ function filterAndRenderNotes() {
         btn.addEventListener('click', (e) => {
             const noteId = e.currentTarget.getAttribute('data-id');
             openTweetDrawer(noteId);
+        });
+    });
+
+    // Add Event Listeners for the Copy note button
+    document.querySelectorAll('.btn-card-copy').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const noteId = e.currentTarget.getAttribute('data-id');
+            const note = allNotes.find(n => n.id === noteId);
+            if (note) {
+                navigator.clipboard.writeText(note.clean_text)
+                    .then(() => showToast('Release note text copied!', 'success'))
+                    .catch(() => showToast('Failed to copy text', 'error'));
+            }
         });
     });
 }
@@ -379,6 +395,56 @@ function updateCharCount() {
 // ----------------------------------------------------
 // Event Listeners & Bootstrapping
 // ----------------------------------------------------
+function exportFilteredNotesToCSV() {
+    let filtered = allNotes;
+    
+    if (activeFilter !== 'all') {
+        filtered = filtered.filter(note => note.type === activeFilter);
+    }
+    
+    if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        filtered = filtered.filter(note => 
+            note.date.toLowerCase().includes(query) ||
+            note.type.toLowerCase().includes(query) ||
+            note.clean_text.toLowerCase().includes(query)
+        );
+    }
+    
+    if (filtered.length === 0) {
+        showToast('No notes available to export', 'error');
+        return;
+    }
+    
+    // Header
+    let csvRows = ["Date,Type,Link,Description"];
+    
+    // Rows
+    filtered.forEach(note => {
+        const dateVal = `"${note.date.replace(/"/g, '""')}"`;
+        const typeVal = `"${note.type.replace(/"/g, '""')}"`;
+        const linkVal = `"${(note.link || '').replace(/"/g, '""')}"`;
+        const descVal = `"${note.clean_text.replace(/"/g, '""')}"`;
+        csvRows.push(`${dateVal},${typeVal},${linkVal},${descVal}`);
+    });
+    
+    const csvString = csvRows.join('\n');
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    const filterName = activeFilter.toLowerCase();
+    const filename = `bigquery_release_notes_${filterName}_${new Date().toISOString().split('T')[0]}.csv`;
+    link.setAttribute("download", filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showToast(`Successfully exported ${filtered.length} notes to CSV!`, 'success');
+}
+
 function setupEventListeners() {
     // Refresh button click
     refreshBtn.addEventListener('click', () => {
@@ -389,6 +455,12 @@ function setupEventListeners() {
     retryBtn.addEventListener('click', () => {
         fetchReleaseNotes(true);
     });
+    
+    // Export CSV click
+    const exportCsvBtn = document.getElementById('export-csv-btn');
+    if (exportCsvBtn) {
+        exportCsvBtn.addEventListener('click', exportFilteredNotesToCSV);
+    }
     
     // Search input change
     searchInput.addEventListener('input', (e) => {

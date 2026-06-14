@@ -598,13 +598,14 @@ h1, h2, h3, h4, .brand h1 {
 .note-footer {
     display: flex;
     justify-content: flex-end;
+    gap: 0.5rem;
     border-top: 1px solid var(--border-color);
     padding-top: 0.8rem;
     margin-top: 0.5rem;
 }
 
-/* Tweet Button in Card */
-.btn-card-tweet {
+/* Card Utility Buttons */
+.btn-card-tweet, .btn-card-copy {
     background-color: transparent;
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
@@ -622,6 +623,12 @@ h1, h2, h3, h4, .brand h1 {
     background-color: rgba(29, 155, 240, 0.1);
     color: var(--twitter-blue);
     border-color: var(--twitter-blue);
+}
+
+.btn-card-copy:hover {
+    background-color: hsla(224, 40%, 20%, 0.5);
+    color: var(--text-primary);
+    border-color: var(--text-muted);
 }
 
 /* Skeleton Loading Animation */
